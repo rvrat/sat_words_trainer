@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -356,6 +357,11 @@ select#blockSelect{
   </div>
 
   <div class="sidebar-section">
+    <h3>Повторение</h3>
+    <button class="btn btn-ghost btn-block" id="globalReviewBtn">🔁 Повторить все выученные слова</button>
+  </div>
+
+  <div class="sidebar-section">
     <h3>Настройки раунда</h3>
     <div class="field">
       <label>Слов в раунде: <span id="roundSizeLabel"></span></label>
@@ -368,6 +374,7 @@ select#blockSelect{
   <div class="sidebar-section">
     <h3>Управление словами</h3>
     <button class="btn btn-ghost btn-block" id="openAddWord">➕ Добавить слово</button>
+    <button class="btn btn-ghost btn-block" id="openBulkAdd">📋 Добавить список слов</button>
   </div>
 
   <div class="sidebar-section">
@@ -407,6 +414,26 @@ select#blockSelect{
     <div class="modal-actions">
       <button class="btn btn-ghost" id="cancelAddWord">Отмена</button>
       <button class="btn btn-primary" id="confirmAddWord">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ МОДАЛКА "ДОБАВИТЬ СПИСОК СЛОВ" ============ -->
+<div class="modal-overlay" id="bulkAddModal">
+  <div class="modal">
+    <h3>Добавить список слов</h3>
+    <div class="field">
+      <label>Блок</label>
+      <select id="bulkWordBlock"></select>
+    </div>
+    <div class="field">
+      <label>Список (по одному слову на строку, формат: слово - перевод)</label>
+      <textarea id="bulkWordsText" rows="8" placeholder="cat - кошка&#10;dog - собака&#10;resilient - устойчивый, стойкий"></textarea>
+    </div>
+    <div id="bulkPreview" style="font-size:12.5px; color:var(--text-faint); margin-top:-4px; margin-bottom:8px;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelBulkAdd">Отмена</button>
+      <button class="btn btn-primary" id="confirmBulkAdd">Добавить все</button>
     </div>
   </div>
 </div>
@@ -564,10 +591,19 @@ const WORDS_RAW = [
 [18,"Tough","жесткий, трудный"],[18,"Hideous","отвратительный"],[18,"Complicated","сложный"],
 [18,"Intense","глубокий, сильный"],[18,"irresolvable","неразрешимый"],[18,"self-contradictory","противоречащий себе"],
 [18,"imperative","срочный, важный"],[18,"unavoidable","неизбежный"],[18,"Species","виды"],
-[18,"tend to","быть склонным"]
+[18,"tend to","быть склонным"],[18,"controversial","спорный, вызывающий споры"],
+
+[19,"extensive","обширный, широкий"],[19,"universal","всеобщий, универсальный"],[19,"long to V","очень хотеть что-либо сделать"],
+[19,"resilient","устойчивый, стойкий"],[19,"buoy","буй, бакен"],[19,"retina","сетчатка глаза"],
+[19,"vessel","судно, корабль; сосуд"],[19,"conceit","тщеславие, самомнение; необычная идея"],[19,"alas","увы"],
+[19,"pinch","щипать; щепотка"],[19,"capacity","способность, возможность; вместимость"],[19,"expediently","целесообразно, практично"],
+[19,"aware","осведомлённый, знающий"],[19,"unaware","не осведомлённый, не знающий"],[19,"imply","подразумевать, намекать"],
+[19,"justify","оправдывать, обосновывать"],[19,"contemporary","современный; современник"],[19,"occasional","случайный, периодический"],
+[19,"occasionally","иногда, время от времени"],[19,"myriad","огромное количество, множество"],[19,"untenable","несостоятельный, невыносимый"],
+[19,"deficient","недостаточный, испытывающий недостаток"],[19,"compel","принуждать, вынуждать"]
 ];
 
-const TOTAL_BLOCKS = 18;
+const TOTAL_BLOCKS = 19;
 const BLOCK_SIZES = {}; // считаем размер каждого блока по факту
 WORDS_RAW.forEach(([b])=>{ BLOCK_SIZES[b]=(BLOCK_SIZES[b]||0)+1; });
 
@@ -648,6 +684,48 @@ async function loadData(){
     try{ state.settings = Object.assign(state.settings, JSON.parse(rawSettings)); }
     catch(e){ /* повреждённые настройки — используем значения по умолчанию */ }
   }
+  await mergeNewBaseWords();
+  await applyOneTimeMigrations();
+}
+
+// Разовые миграции данных — выполняются один раз для каждого пользователя,
+// флаг сохраняется в настройках, чтобы не повторять действие при следующих запусках.
+async function applyOneTimeMigrations(){
+  if(!Array.isArray(state.settings.migrations)) state.settings.migrations = [];
+
+  if(!state.settings.migrations.includes('markBlocks1to18Learned')){
+    // Отмечаем все слова "старых" блоков (1–18) как выученные —
+    // новый блок 19 не трогаем, он остаётся для изучения.
+    state.words.forEach(w => {
+      if(w.blockId <= 18){
+        w.history = ['know','know','know','know','know'];
+      }
+    });
+    state.settings.migrations.push('markBlocks1to18Learned');
+    await saveWords();
+    await saveSettings();
+    showToast('✅ Блоки 1–18 отмечены как выученные');
+  }
+}
+
+// Если в коде появились новые "родные" слова (новые блоки/слова, добавленные Claude),
+// добавляем их к уже сохранённому прогрессу пользователя, НЕ трогая существующую историю.
+// Слова, добавленные самим пользователем вручную, никогда не совпадают по id (у них id вида 'w'+timestamp),
+// поэтому не задеваются.
+async function mergeNewBaseWords(){
+  const base = buildBaseWords();
+  const existingIds = new Set(state.words.map(w => w.id));
+  let added = 0;
+  base.forEach(bw => {
+    if(!existingIds.has(bw.id)){
+      state.words.push(bw);
+      added++;
+    }
+  });
+  if(added > 0){
+    await saveWords();
+    showToast(`Добавлено новых слов: ${added}`);
+  }
 }
 async function saveWords(){
   const ok = await storageSetRaw(STORAGE_WORDS, JSON.stringify(state.words));
@@ -720,6 +798,11 @@ function renderSidebar(){
   document.getElementById('roundSizeSlider').value = state.settings.roundSize;
   document.getElementById('roundSizeLabel').textContent = state.settings.roundSize;
 
+  const allLearnedCount = state.words.filter(isLearned).length;
+  const globalReviewBtn = document.getElementById('globalReviewBtn');
+  globalReviewBtn.textContent = `🔁 Повторить все выученные слова (${allLearnedCount})`;
+  globalReviewBtn.disabled = allLearnedCount === 0;
+
   const newWordBlockSelect = document.getElementById('newWordBlock');
   newWordBlockSelect.innerHTML = '';
   for(let b=1; b<=TOTAL_BLOCKS; b++){
@@ -727,6 +810,15 @@ function renderSidebar(){
     opt.value = b; opt.textContent = 'Блок ' + b;
     if(b === state.settings.currentBlock) opt.selected = true;
     newWordBlockSelect.appendChild(opt);
+  }
+
+  const bulkWordBlockSelect = document.getElementById('bulkWordBlock');
+  bulkWordBlockSelect.innerHTML = '';
+  for(let b=1; b<=TOTAL_BLOCKS; b++){
+    const opt = document.createElement('option');
+    opt.value = b; opt.textContent = 'Блок ' + b;
+    if(b === state.settings.currentBlock) opt.selected = true;
+    bulkWordBlockSelect.appendChild(opt);
   }
 }
 
@@ -826,7 +918,7 @@ function renderRoundCard(){
   const correctStreak = word.history.filter(h=>h==='know').length;
 
   card.innerHTML = `
-    <div class="card-tag">Блок <b>${String(word.blockId).padStart(2,'0')}</b> · ${r.mode === 'review' ? '🔁 повторение' : 'изучение'}</div>
+    <div class="card-tag">Блок <b>${String(word.blockId).padStart(2,'0')}</b> · ${r.mode === 'review' ? '🔁 повторение' : r.mode === 'globalReview' ? '🔁 общее повторение' : 'изучение'}</div>
     <div class="word-en">${escapeHtml(word.english)}</div>
     <div class="word-translation" id="translationEl">${escapeHtml(word.translation)}</div>
     ${word.example ? `<div class="word-example" id="exampleEl">${escapeHtml(word.example)}</div>` : ''}
@@ -867,7 +959,9 @@ function renderRoundSummary(){
   const r = state.round;
   const wrap = document.createElement('div');
   wrap.className = 'round-summary';
-  const subtitle = r.mode === 'review'
+  const subtitle = r.mode === 'globalReview'
+    ? 'Общее повторение всех выученных слов'
+    : r.mode === 'review'
     ? `Блок ${state.settings.currentBlock} · повторение выученных слов`
     : `Блок ${state.settings.currentBlock}`;
   wrap.innerHTML = `
@@ -895,16 +989,26 @@ function escapeHtml(str){
 }
 
 /* ---------- 7. ЛОГИКА РАУНДА ---------- */
-// mode: 'new' — только невыученные слова блока; 'review' — повтор уже выученных слов
+// mode: 'new' — только невыученные слова текущего блока
+//       'review' — повтор уже выученных слов ТЕКУЩЕГО блока
+//       'globalReview' — повтор уже выученных слов ИЗ ВСЕХ БЛОКОВ
 function startRound(mode){
   mode = mode || 'new';
   const blockId = state.settings.currentBlock;
-  const pool = mode === 'review'
-    ? learnedWordsInBlock(blockId)
-    : wordsInBlock(blockId).filter(w => !isLearned(w));
+  let pool;
+  if(mode === 'globalReview'){
+    pool = state.words.filter(isLearned);
+  } else if(mode === 'review'){
+    pool = learnedWordsInBlock(blockId);
+  } else {
+    pool = wordsInBlock(blockId).filter(w => !isLearned(w));
+  }
 
   if(pool.length === 0){
-    showToast(mode === 'review' ? 'Нет выученных слов для повторения' : 'Все слова блока уже выучены');
+    const msg = mode === 'globalReview' ? 'Нет выученных слов для повторения'
+      : mode === 'review' ? 'Нет выученных слов для повторения'
+      : 'Все слова блока уже выучены';
+    showToast(msg);
     return;
   }
 
@@ -928,9 +1032,10 @@ function submitAnswer(known){
   recordAnswer(word, known);
   if(known) r.correct++; else r.wrong++;
 
-  const blockId = state.settings.currentBlock;
+  const wordBlockId = word.blockId; // используем блок самого слова, а не текущий выбранный блок —
+                                     // это важно для режима "повторить все выученные", где слова из разных блоков
   const nowLearned = isLearned(word);
-  const blockFullyLearnedNow = !wasLearnedBefore && nowLearned && (learnedCountInBlock(blockId) === BLOCK_SIZES[blockId]);
+  const blockFullyLearnedNow = !wasLearnedBefore && nowLearned && (learnedCountInBlock(wordBlockId) === BLOCK_SIZES[wordBlockId]);
 
   r.index++;
   if(r.index >= r.wordIds.length){
@@ -940,7 +1045,7 @@ function submitAnswer(known){
 
   if(blockFullyLearnedNow){
     launchConfetti();
-    showToast('🎉 Блок ' + blockId + ' полностью выучен!');
+    showToast('🎉 Блок ' + wordBlockId + ' полностью выучен!');
   }
 }
 
@@ -1012,6 +1117,61 @@ function addWord(){
   showToast('Слово добавлено');
 }
 
+/* ---------- 10b. МАССОВОЕ ДОБАВЛЕНИЕ СЛОВ (списком, через дефис) ---------- */
+// Формат строки: "английское слово - перевод" (дефис с пробелами или без)
+function parseBulkWords(text){
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const parsed = [];
+  const invalid = [];
+  lines.forEach(line => {
+    let en, tr;
+    const idxSpaced = line.indexOf(' - ');
+    if(idxSpaced !== -1){
+      en = line.slice(0, idxSpaced).trim();
+      tr = line.slice(idxSpaced + 3).trim();
+    }else{
+      const idxPlain = line.indexOf('-');
+      if(idxPlain === -1){ invalid.push(line); return; }
+      en = line.slice(0, idxPlain).trim();
+      tr = line.slice(idxPlain + 1).trim();
+    }
+    if(!en || !tr){ invalid.push(line); return; }
+    parsed.push({ english: en, translation: tr });
+  });
+  return { parsed, invalid };
+}
+
+function updateBulkPreview(){
+  const text = document.getElementById('bulkWordsText').value;
+  const preview = document.getElementById('bulkPreview');
+  if(!text.trim()){ preview.textContent = ''; return; }
+  const { parsed, invalid } = parseBulkWords(text);
+  let msg = `Распознано слов: ${parsed.length}`;
+  if(invalid.length) msg += ` · не удалось разобрать строк: ${invalid.length}`;
+  preview.textContent = msg;
+}
+
+function addBulkWords(){
+  const block = parseInt(document.getElementById('bulkWordBlock').value, 10);
+  const text = document.getElementById('bulkWordsText').value;
+  const { parsed, invalid } = parseBulkWords(text);
+  if(parsed.length === 0){
+    showToast('Не найдено ни одного слова в списке. Формат: слово - перевод');
+    return;
+  }
+  parsed.forEach((item, i) => {
+    const newId = 'w' + Date.now() + '_' + i;
+    state.words.push({ id:newId, english:item.english, translation:item.translation, example:'', blockId:block, history:[] });
+    BLOCK_SIZES[block] = (BLOCK_SIZES[block]||0) + 1;
+  });
+  saveWords();
+  document.getElementById('bulkWordsText').value = '';
+  document.getElementById('bulkPreview').textContent = '';
+  closeBulkModal();
+  renderAll();
+  showToast(`Добавлено слов: ${parsed.length}` + (invalid.length ? `, пропущено строк: ${invalid.length}` : ''));
+}
+
 /* ---------- 11. ВСПОМОГАТЕЛЬНЫЕ UI-ФУНКЦИИ ---------- */
 let toastTimer;
 function showToast(msg){
@@ -1025,6 +1185,8 @@ function openSidebar(){ document.getElementById('sidebar').classList.add('open')
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
 function openModal(){ document.getElementById('addWordModal').classList.add('open'); }
 function closeModal(){ document.getElementById('addWordModal').classList.remove('open'); }
+function openBulkModal(){ document.getElementById('bulkAddModal').classList.add('open'); }
+function closeBulkModal(){ document.getElementById('bulkAddModal').classList.remove('open'); }
 
 /* ---------- 12. ТЕМА ---------- */
 function applyTheme(){
@@ -1113,6 +1275,19 @@ function attachEventListeners(){
   document.getElementById('confirmAddWord').addEventListener('click', addWord);
   document.getElementById('addWordModal').addEventListener('click', (e)=>{
     if(e.target.id === 'addWordModal') closeModal();
+  });
+
+  document.getElementById('openBulkAdd').addEventListener('click', openBulkModal);
+  document.getElementById('cancelBulkAdd').addEventListener('click', closeBulkModal);
+  document.getElementById('confirmBulkAdd').addEventListener('click', addBulkWords);
+  document.getElementById('bulkWordsText').addEventListener('input', updateBulkPreview);
+  document.getElementById('bulkAddModal').addEventListener('click', (e)=>{
+    if(e.target.id === 'bulkAddModal') closeBulkModal();
+  });
+
+  document.getElementById('globalReviewBtn').addEventListener('click', ()=>{
+    startRound('globalReview');
+    closeSidebar();
   });
 
   document.getElementById('exportBtn').addEventListener('click', exportData);
