@@ -366,7 +366,7 @@ select#blockSelect{
     <div class="field">
       <label>Слов в раунде: <span id="roundSizeLabel"></span></label>
       <div class="slider-row">
-        <input type="range" id="roundSizeSlider" min="5" max="20" value="10">
+        <input type="range" id="roundSizeSlider" min="5" max="30" value="10">
       </div>
     </div>
   </div>
@@ -795,7 +795,10 @@ function renderSidebar(){
     list.appendChild(row);
   }
 
-  document.getElementById('roundSizeSlider').value = state.settings.roundSize;
+  const maxBlockSize = Math.max(...Object.values(BLOCK_SIZES), 20);
+  const slider = document.getElementById('roundSizeSlider');
+  slider.max = maxBlockSize;
+  slider.value = state.settings.roundSize;
   document.getElementById('roundSizeLabel').textContent = state.settings.roundSize;
 
   const allLearnedCount = state.words.filter(isLearned).length;
@@ -1012,7 +1015,9 @@ function startRound(mode){
     return;
   }
 
-  const size = Math.min(state.settings.roundSize, pool.length);
+  // В режиме "повторить все выученные" берём ВСЕ слова пула целиком,
+  // не ограничивая ползунком "слов в раунде" — это отдельный полный прогон.
+  const size = mode === 'globalReview' ? pool.length : Math.min(state.settings.roundSize, pool.length);
   const shuffled = [...pool].sort(()=>Math.random()-0.5).slice(0, size);
   state.round = {
     wordIds: shuffled.map(w=>w.id),
