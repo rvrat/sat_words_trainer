@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -273,8 +272,8 @@ select#blockSelect{
 }
 .block-row:hover{ border-color:var(--gold-dim); }
 .block-row.active{ border-color:var(--gold); background:var(--surface-2); }
-.block-row-top{ display:flex; justify-content:space-between; font-size:13px; font-weight:600; }
-.block-row-top .status{ font-size:11px; color:var(--good); }
+.block-row-top{ display:flex; justify-content:space-between; font-size:13px; font-weight:600; gap:8px;}
+.block-row-top .status{ font-size:11px; color:var(--good); white-space:nowrap;}
 .block-bar{ height:4px; background:var(--surface-2); border-radius:2px; overflow:hidden; }
 .block-bar-fill{ height:100%; background:var(--gold); }
 
@@ -446,7 +445,13 @@ select#blockSelect{
    Полностью автономное веб-приложение на чистом JS.
    ========================================================================= */
 
-/* ---------- 1. ИСХОДНЫЕ ДАННЫЕ: 18 блоков, 359 слов ---------- */
+/* ---------- 0. ИМЕНА БЛОКОВ (опционально) ---------- */
+// Если для блока задано имя — оно будет отображаться рядом с его номером.
+const BLOCK_NAMES = {
+  22: "Математика"
+};
+
+/* ---------- 1. ИСХОДНЫЕ ДАННЫЕ: 22 блока ---------- */
 // Формат: [номер блока, английское слово, перевод]
 const WORDS_RAW = [
 [1,"participation","участие"],[1,"convoluted","запутанный, сложный"],[1,"tale","история, рассказ"],
@@ -605,12 +610,52 @@ const WORDS_RAW = [
 [20,"subtle","тонкий, едва различимый, неявный"],[20,"subtleties","тонкости, нюансы"],[20,"take into account","принимать во внимание, учитывать"],
 [20,"contemporary","современный; относящийся к тому же периоду"],[20,"modern","современный, нынешний; передовой"],[20,"definition","определение, дефиниция"],
 [20,"concern","беспокойство; вопрос, проблема; предмет внимания"],[20,"chaos","хаос, полный беспорядок"],[20,"chaotic","хаотичный, беспорядочный"],
-[20,"pile","стопка, куча; складывать в стопку"],[20,"pile up","накапливаться, скапливаться"],[20,"compile","составлять, собирать и систематизировать"]
+[20,"pile","стопка, куча; складывать в стопку"],[20,"pile up","накапливаться, скапливаться"],[20,"compile","составлять, собирать и систематизировать"],
+
+[21,"prey","добыча"],[21,"carnivorous","плотоядный"],[21,"unearthed","раскопан"],
+[21,"fairly","справедливо"],[21,"ridge","хребет"],[21,"pitches","смолы"],
+[21,"moisture","влага"],[21,"avoided","избегал, уклонялся (от чего-либо)"],[21,"featured","включал в себя, содержал, выводил на первый план"],
+[21,"appreciated","ценил, высоко оценивал, был благодарен"],[21,"disregarded","игнорировал, пренебрегал, не принимал во внимание"],
+[21,"fascinated","очарованный"],[21,"vivid","яркий"],[21,"bloom","цветение, расцвет; цвести"],
+[21,"toll","плата, потери; звонить в колокол"],[21,"polled","опрошенный; проводил опрос"],[21,"originate from","происходить из, брать начало от"],
+[21,"coincidence","совпадение"],[21,"an oddity","странность, необычность"],[21,"a reprieve","передышка, отсрочка"],
+[21,"an incident","происшествие, случай"],[21,"esteem","уважение, почтение"],[21,"hesitated","колебался, медлил"],
+[21,"robust","крепкий, здоровый; устойчивый"],[21,"breached","нарушил, пробил брешь"],[21,"haphazard","бессистемный, случайный"],
+
+/* ---------- БЛОК 22: МАТЕМАТИКА ---------- */
+[22,"Equation","уравнение"],[22,"Inequality","неравенство"],[22,"Linear equation","линейное уравнение"],
+[22,"Linear function","линейная функция"],[22,"Slope","угловой коэффициент"],[22,"Gradient","наклон"],
+[22,"Intercept","точка пересечения с осью"],[22,"x-intercept","точка пересечения с осью X"],[22,"y-intercept","точка пересечения с осью Y"],
+[22,"System of equations","система уравнений"],[22,"Quadratic function","квадратичная функция"],[22,"Polynomial","многочлен"],
+[22,"Factor","разложить на множители"],[22,"Exponent","показатель степени"],[22,"Power","степень"],
+[22,"Radical","корень"],[22,"Root","корень"],[22,"Variable","переменная"],
+[22,"Constant","константа"],[22,"Expression","выражение"],[22,"Equivalent","эквивалентный"],
+[22,"Coefficient","коэффициент"],[22,"Domain","область определения"],[22,"Vertex","вершина"],
+[22,"Mean","среднее арифметическое"],[22,"Average","среднее"],[22,"Median","медиана"],
+[22,"Mode","мода"],[22,"Range","размах выборки"],[22,"Standard Deviation","стандартное отклонение"],
+[22,"Probability","вероятность"],[22,"Ratio","отношение"],[22,"Proportion","пропорция"],
+[22,"Scatter plot","диаграмма рассеяния"],[22,"Line of best fit","линия наилучшего соответствия"],[22,"Distribution","распределение"],
+[22,"Triangle","треугольник"],[22,"Right triangle","прямоугольный треугольник"],[22,"Isosceles triangle","равнобедренный треугольник"],
+[22,"Equilateral triangle","равносторонний треугольник"],[22,"Hypotenuse","гипотенуза"],[22,"Quadrilateral","четырёхугольник"],
+[22,"Rectangle","прямоугольник"],[22,"Circumference","длина окружности"],[22,"Radius","радиус"],
+[22,"Diameter","диаметр"],[22,"Angle","угол"],[22,"Acute angle","острый угол"],
+[22,"Obtuse angle","тупой угол"],[22,"Right angle","прямой угол"],[22,"Bisector","биссектриса"],
+[22,"Parallel","параллельный"],[22,"Perpendicular","перпендикулярный"],[22,"Congruent","конгруэнтный"],
+[22,"Similar triangles","подобные треугольники"],[22,"Area","площадь"],[22,"Surface area","площадь поверхности"],
+[22,"Coordinate","координата"],[22,"Axis","ось"],[22,"Plane","плоскость"],
+[22,"Integer","целое число"],[22,"Odd number","нечётное число"],[22,"Even number","чётное число"],
+[22,"Fraction","дробь"],[22,"Decimal","десятичная дробь"],[22,"Reciprocal","обратное число"],
+[22,"Square root","квадратный корень"],[22,"Absolute value","абсолютная величина"],[22,"Quotient","частное"],
+[22,"Remainder","остаток"],[22,"Consecutive integers","последовательные целые числа"]
 ];
 
-const TOTAL_BLOCKS = 20;
+const TOTAL_BLOCKS = 22;
 const BLOCK_SIZES = {}; // считаем размер каждого блока по факту
 WORDS_RAW.forEach(([b])=>{ BLOCK_SIZES[b]=(BLOCK_SIZES[b]||0)+1; });
+
+function blockLabel(b){
+  return BLOCK_NAMES[b] ? `Блок ${b} — ${BLOCK_NAMES[b]}` : `Блок ${b}`;
+}
 
 function buildBaseWords(){
   return WORDS_RAW.map((row,i)=>({
@@ -624,10 +669,6 @@ function buildBaseWords(){
 }
 
 /* ---------- 2. СОСТОЯНИЕ ПРИЛОЖЕНИЯ ---------- */
-// Универсальный слой хранения:
-// - если файл открыт внутри Claude (артефакт) — доступен window.storage, используем его
-// - если файл открыт как обычный HTML (двойным кликом / в браузере) — используем localStorage
-// Это нужно, чтобы прогресс сохранялся в ЛЮБОМ варианте использования файла.
 const hasWindowStorage = (typeof window !== 'undefined')
   && window.storage
   && typeof window.storage.get === 'function'
@@ -639,7 +680,7 @@ async function storageGetRaw(key){
       const res = await window.storage.get(key, false);
       return (res && typeof res.value === 'string') ? res.value : null;
     }catch(e){
-      return null; // ключа ещё нет — это нормально при первом запуске
+      return null;
     }
   }
   try{
@@ -674,7 +715,7 @@ const STORAGE_SETTINGS = 'satVocab_settings_v1';
 let state = {
   words: [],
   settings: { roundSize: 10, currentBlock: 1, theme: 'dark' },
-  round: null // {wordIds:[], index:0, revealed:false, correct:0, wrong:0, mode:'new'|'review'}
+  round: null
 };
 
 async function loadData(){
@@ -687,20 +728,18 @@ async function loadData(){
   const rawSettings = await storageGetRaw(STORAGE_SETTINGS);
   if(rawSettings){
     try{ state.settings = Object.assign(state.settings, JSON.parse(rawSettings)); }
-    catch(e){ /* повреждённые настройки — используем значения по умолчанию */ }
+    catch(e){}
   }
   await mergeNewBaseWords();
   await applyOneTimeMigrations();
 }
 
-// Разовые миграции данных — выполняются один раз для каждого пользователя,
-// флаг сохраняется в настройках, чтобы не повторять действие при следующих запусках.
 async function applyOneTimeMigrations(){
   if(!Array.isArray(state.settings.migrations)) state.settings.migrations = [];
 
   if(!state.settings.migrations.includes('markBlocks1to18Learned')){
     // Отмечаем все слова "старых" блоков (1–18) как выученные —
-    // новый блок 19 не трогаем, он остаётся для изучения.
+    // новые блоки (19, 20, 21, 22) не трогаем, они остаются для изучения.
     state.words.forEach(w => {
       if(w.blockId <= 18){
         w.history = ['know','know','know','know','know'];
@@ -713,10 +752,6 @@ async function applyOneTimeMigrations(){
   }
 }
 
-// Если в коде появились новые "родные" слова (новые блоки/слова, добавленные Claude),
-// добавляем их к уже сохранённому прогрессу пользователя, НЕ трогая существующую историю.
-// Слова, добавленные самим пользователем вручную, никогда не совпадают по id (у них id вида 'w'+timestamp),
-// поэтому не задеваются.
 async function mergeNewBaseWords(){
   const base = buildBaseWords();
   const existingIds = new Set(state.words.map(w => w.id));
@@ -764,7 +799,7 @@ function renderTopbar(){
     const total = BLOCK_SIZES[b];
     const opt = document.createElement('option');
     opt.value = b;
-    opt.textContent = `Блок ${b} — Выучено ${learned}/${total}`;
+    opt.textContent = `${blockLabel(b)} — Выучено ${learned}/${total}`;
     if(b === state.settings.currentBlock) opt.selected = true;
     select.appendChild(opt);
   }
@@ -785,7 +820,7 @@ function renderSidebar(){
     row.className = 'block-row' + (b === state.settings.currentBlock ? ' active' : '');
     row.innerHTML = `
       <div class="block-row-top">
-        <span>Блок ${b}</span>
+        <span>${blockLabel(b)}</span>
         <span class="status">${learned}/${total}${learned===total?' ✅':''}</span>
       </div>
       <div class="block-bar"><div class="block-bar-fill" style="width:${total? (learned/total*100):0}%"></div></div>
@@ -815,7 +850,7 @@ function renderSidebar(){
   newWordBlockSelect.innerHTML = '';
   for(let b=1; b<=TOTAL_BLOCKS; b++){
     const opt = document.createElement('option');
-    opt.value = b; opt.textContent = 'Блок ' + b;
+    opt.value = b; opt.textContent = blockLabel(b);
     if(b === state.settings.currentBlock) opt.selected = true;
     newWordBlockSelect.appendChild(opt);
   }
@@ -824,7 +859,7 @@ function renderSidebar(){
   bulkWordBlockSelect.innerHTML = '';
   for(let b=1; b<=TOTAL_BLOCKS; b++){
     const opt = document.createElement('option');
-    opt.value = b; opt.textContent = 'Блок ' + b;
+    opt.value = b; opt.textContent = blockLabel(b);
     if(b === state.settings.currentBlock) opt.selected = true;
     bulkWordBlockSelect.appendChild(opt);
   }
@@ -845,13 +880,11 @@ function renderMain(){
   const blockWords = wordsInBlock(blockId);
   const unlearned = blockWords.filter(w => !isLearned(w));
 
-  // --- Идёт раунд ---
   if(state.round && !state.round.finished){
     main.appendChild(renderRoundCard());
     return;
   }
 
-  // --- Раунд только что завершён ---
   if(state.round && state.round.finished){
     main.appendChild(renderRoundSummary());
     return;
@@ -859,13 +892,12 @@ function renderMain(){
 
   const learnedCount = learnedCountInBlock(blockId);
 
-  // --- Все слова блока выучены ---
   if(unlearned.length === 0){
     const wrap = document.createElement('div');
     wrap.className = 'empty-state';
     wrap.innerHTML = `
       <div class="big">🏆</div>
-      <h3>Блок ${blockId} полностью выучен!</h3>
+      <h3>${blockLabel(blockId)} полностью выучен!</h3>
       <p>Все ${blockWords.length} слов в этом блоке выучены наизусть. Можно повторить их ещё раз, выбрать другой блок или сбросить прогресс.</p>
       <button class="btn btn-primary" id="reviewBtn" style="margin-top:22px;">🔁 Повторить выученные (${learnedCount})</button>
     `;
@@ -874,14 +906,13 @@ function renderMain(){
     return;
   }
 
-  // --- Экран "Начать раунд" ---
   const wrap = document.createElement('div');
   wrap.className = 'start-round-area';
   const roundSize = Math.min(state.settings.roundSize, unlearned.length);
   wrap.innerHTML = `
     <div class="empty-state">
       <div class="big">📖</div>
-      <h3>Блок ${blockId}</h3>
+      <h3>${blockLabel(blockId)}</h3>
       <p>Не выучено слов: ${unlearned.length} из ${blockWords.length}</p>
     </div>
     <button class="btn btn-primary" id="startRoundBtn" style="margin-top:22px;">Начать раунд (${roundSize} слов)</button>
@@ -901,7 +932,6 @@ function renderRoundCard(){
   container.style.flexDirection = 'column';
   container.style.alignItems = 'center';
 
-  // индикатор раунда (мини-точки)
   const dotsHtml = r.wordIds.map((_,i)=>{
     let cls = '';
     if(i < r.index) cls = 'done';
@@ -926,7 +956,7 @@ function renderRoundCard(){
   const correctStreak = word.history.filter(h=>h==='know').length;
 
   card.innerHTML = `
-    <div class="card-tag">Блок <b>${String(word.blockId).padStart(2,'0')}</b> · ${r.mode === 'review' ? '🔁 повторение' : r.mode === 'globalReview' ? '🔁 общее повторение' : 'изучение'}</div>
+    <div class="card-tag">${blockLabel(word.blockId).toUpperCase()} · ${r.mode === 'review' ? '🔁 повторение' : r.mode === 'globalReview' ? '🔁 общее повторение' : 'изучение'}</div>
     <div class="word-en">${escapeHtml(word.english)}</div>
     <div class="word-translation" id="translationEl">${escapeHtml(word.translation)}</div>
     ${word.example ? `<div class="word-example" id="exampleEl">${escapeHtml(word.example)}</div>` : ''}
@@ -949,7 +979,6 @@ function renderRoundCard(){
   `;
   container.appendChild(controls);
 
-  // перевод/пример скрыты, пока не нажата кнопка
   requestAnimationFrame(()=>{
     document.getElementById('showTranslationBtn').addEventListener('click', ()=>{
       document.getElementById('translationEl').classList.add('visible');
@@ -970,8 +999,8 @@ function renderRoundSummary(){
   const subtitle = r.mode === 'globalReview'
     ? 'Общее повторение всех выученных слов'
     : r.mode === 'review'
-    ? `Блок ${state.settings.currentBlock} · повторение выученных слов`
-    : `Блок ${state.settings.currentBlock}`;
+    ? `${blockLabel(state.settings.currentBlock)} · повторение выученных слов`
+    : blockLabel(state.settings.currentBlock);
   wrap.innerHTML = `
     <h2>Раунд завершён!</h2>
     <div class="sub">${subtitle}</div>
@@ -997,9 +1026,6 @@ function escapeHtml(str){
 }
 
 /* ---------- 7. ЛОГИКА РАУНДА ---------- */
-// mode: 'new' — только невыученные слова текущего блока
-//       'review' — повтор уже выученных слов ТЕКУЩЕГО блока
-//       'globalReview' — повтор уже выученных слов ИЗ ВСЕХ БЛОКОВ
 function startRound(mode){
   mode = mode || 'new';
   const blockId = state.settings.currentBlock;
@@ -1020,8 +1046,6 @@ function startRound(mode){
     return;
   }
 
-  // В режиме "повторить все выученные" берём ВСЕ слова пула целиком,
-  // не ограничивая ползунком "слов в раунде" — это отдельный полный прогон.
   const size = mode === 'globalReview' ? pool.length : Math.min(state.settings.roundSize, pool.length);
   const shuffled = [...pool].sort(()=>Math.random()-0.5).slice(0, size);
   state.round = {
@@ -1042,8 +1066,7 @@ function submitAnswer(known){
   recordAnswer(word, known);
   if(known) r.correct++; else r.wrong++;
 
-  const wordBlockId = word.blockId; // используем блок самого слова, а не текущий выбранный блок —
-                                     // это важно для режима "повторить все выученные", где слова из разных блоков
+  const wordBlockId = word.blockId;
   const nowLearned = isLearned(word);
   const blockFullyLearnedNow = !wasLearnedBefore && nowLearned && (learnedCountInBlock(wordBlockId) === BLOCK_SIZES[wordBlockId]);
 
@@ -1055,7 +1078,7 @@ function submitAnswer(known){
 
   if(blockFullyLearnedNow){
     launchConfetti();
-    showToast('🎉 Блок ' + wordBlockId + ' полностью выучен!');
+    showToast('🎉 ' + blockLabel(wordBlockId) + ' полностью выучен!');
   }
 }
 
@@ -1098,7 +1121,7 @@ function resetBlockProgress(blockId){
   saveWords();
   state.round = null;
   renderAll();
-  showToast(`Прогресс блока ${blockId} сброшен`);
+  showToast(`Прогресс ${blockLabel(blockId)} сброшен`);
 }
 function resetAllProgress(){
   state.words.forEach(w => w.history = []);
@@ -1127,8 +1150,7 @@ function addWord(){
   showToast('Слово добавлено');
 }
 
-/* ---------- 10b. МАССОВОЕ ДОБАВЛЕНИЕ СЛОВ (списком, через дефис) ---------- */
-// Формат строки: "английское слово - перевод" (дефис с пробелами или без)
+/* ---------- 10b. МАССОВОЕ ДОБАВЛЕНИЕ СЛОВ ---------- */
 function parseBulkWords(text){
   const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   const parsed = [];
@@ -1246,7 +1268,6 @@ function launchConfetti(){
 
 /* ---------- 14. ИНИЦИАЛИЗАЦИЯ И СЛУШАТЕЛИ ---------- */
 async function init(){
-  // Показываем индикатор, пока прогресс загружается из хранилища
   document.getElementById('mainArea').innerHTML = `
     <div class="empty-state">
       <div class="big">⏳</div>
