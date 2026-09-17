@@ -7,23 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-/* ============ ПЕРЕМЕННЫЕ ТЕМЫ ============ */
 :root{
-  --bg:#12141a;
-  --bg-grain:#161923;
-  --surface:#1c2029;
-  --surface-2:#242936;
-  --border:#2b3040;
-  --border-soft:#232733;
-  --text:#eef0f5;
-  --text-dim:#9aa1b2;
-  --text-faint:#5b6274;
-  --gold:#e0b04a;
-  --gold-dim:#8a7130;
-  --good:#4ade80;
-  --good-dim:#1e3a2a;
-  --bad:#f87171;
-  --bad-dim:#3a1e20;
+  --bg:#12141a; --bg-grain:#161923; --surface:#1c2029; --surface-2:#242936;
+  --border:#2b3040; --border-soft:#232733; --text:#eef0f5; --text-dim:#9aa1b2;
+  --text-faint:#5b6274; --gold:#e0b04a; --gold-dim:#8a7130;
+  --good:#4ade80; --good-dim:#1e3a2a; --bad:#f87171; --bad-dim:#3a1e20;
   --shadow: 0 20px 60px -20px rgba(0,0,0,.6);
   --card-radius: 6px;
   --font-display: 'Fraunces', Georgia, serif;
@@ -31,93 +19,49 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 [data-theme="light"]{
-  --bg:#f4f1ea;
-  --bg-grain:#efece3;
-  --surface:#ffffff;
-  --surface-2:#faf8f3;
-  --border:#e0dccf;
-  --border-soft:#e8e4d8;
-  --text:#242219;
-  --text-dim:#6b6558;
-  --text-faint:#a39c8a;
-  --gold:#a97a1e;
-  --gold-dim:#c99a3e;
-  --good:#1f9d55;
-  --good-dim:#dcf3e5;
-  --bad:#d63a3a;
-  --bad-dim:#fbe2e2;
+  --bg:#f4f1ea; --bg-grain:#efece3; --surface:#ffffff; --surface-2:#faf8f3;
+  --border:#e0dccf; --border-soft:#e8e4d8; --text:#242219; --text-dim:#6b6558;
+  --text-faint:#a39c8a; --gold:#a97a1e; --gold-dim:#c99a3e;
+  --good:#1f9d55; --good-dim:#dcf3e5; --bad:#d63a3a; --bad-dim:#fbe2e2;
   --shadow: 0 20px 50px -25px rgba(60,50,20,.35);
 }
-
 *{box-sizing:border-box; margin:0; padding:0;}
 html,body{height:100%;}
 body{
-  background:
-    radial-gradient(ellipse 900px 500px at 50% -10%, var(--bg-grain), transparent),
-    var(--bg);
-  color:var(--text);
-  font-family:var(--font-body);
-  min-height:100vh;
-  overflow-x:hidden;
+  background: radial-gradient(ellipse 900px 500px at 50% -10%, var(--bg-grain), transparent), var(--bg);
+  color:var(--text); font-family:var(--font-body); min-height:100vh; overflow-x:hidden;
   transition:background .35s ease, color .35s ease;
 }
-
-/* ============ ВЕРХНЯЯ ПАНЕЛЬ ============ */
 .topbar{
-  display:flex; align-items:center; gap:18px;
-  padding:16px 24px;
+  display:flex; align-items:center; gap:18px; padding:16px 24px;
   border-bottom:1px solid var(--border-soft);
   background:color-mix(in srgb, var(--surface) 60%, transparent);
-  backdrop-filter:blur(10px);
-  position:sticky; top:0; z-index:30;
-  flex-wrap:wrap;
+  backdrop-filter:blur(10px); position:sticky; top:0; z-index:30; flex-wrap:wrap;
 }
-.brand{
-  display:flex; align-items:baseline; gap:8px;
-  font-family:var(--font-display);
-  font-weight:600; font-size:20px; letter-spacing:.2px;
-  white-space:nowrap;
-}
-.brand .mark{
-  font-size:12px; font-family:var(--font-mono); color:var(--gold);
-  border:1px solid var(--gold-dim); border-radius:3px; padding:2px 5px;
-  letter-spacing:1px;
-}
+.brand{ display:flex; align-items:baseline; gap:8px; font-family:var(--font-display); font-weight:600; font-size:20px; letter-spacing:.2px; white-space:nowrap;}
+.brand .mark{ font-size:12px; font-family:var(--font-mono); color:var(--gold); border:1px solid var(--gold-dim); border-radius:3px; padding:2px 5px; letter-spacing:1px;}
 .topbar-spacer{flex:1;}
 .block-select-wrap{position:relative;}
 select#blockSelect{
   appearance:none; -webkit-appearance:none;
-  background:var(--surface-2); color:var(--text);
-  border:1px solid var(--border); border-radius:5px;
+  background:var(--surface-2); color:var(--text); border:1px solid var(--border); border-radius:5px;
   padding:9px 34px 9px 12px; font-family:var(--font-body); font-size:13.5px; font-weight:500;
   cursor:pointer; min-width:230px;
 }
-.block-select-wrap::after{
-  content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%);
-  color:var(--text-dim); pointer-events:none; font-size:11px;
-}
-.overall-progress{
-  display:flex; flex-direction:column; gap:4px; min-width:170px;
-}
+.block-select-wrap::after{ content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-dim); pointer-events:none; font-size:11px;}
+.overall-progress{ display:flex; flex-direction:column; gap:4px; min-width:170px;}
 .overall-progress .label{font-size:11px; color:var(--text-faint); font-family:var(--font-mono); letter-spacing:.5px; text-transform:uppercase;}
 .overall-progress .bar{height:5px; background:var(--surface-2); border-radius:3px; overflow:hidden; border:1px solid var(--border-soft);}
 .overall-progress .bar-fill{height:100%; background:linear-gradient(90deg, var(--gold-dim), var(--gold)); transition:width .5s ease;}
 .overall-progress .num{font-size:12px; color:var(--text-dim); font-family:var(--font-mono);}
-
 .icon-btn{
-  width:38px; height:38px; border-radius:50%;
-  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--text);
   display:flex; align-items:center; justify-content:center;
   cursor:pointer; font-size:16px; transition:all .2s ease; flex-shrink:0;
 }
 .icon-btn:hover{border-color:var(--gold); color:var(--gold); transform:translateY(-1px);}
-
-/* ============ ГЛАВНАЯ ОБЛАСТЬ ============ */
-.main{
-  display:flex; flex-direction:column; align-items:center;
-  padding:48px 20px 80px;
-  min-height:calc(100vh - 72px);
-}
+.main{ display:flex; flex-direction:column; align-items:center; padding:48px 20px 80px; min-height:calc(100vh - 72px);}
 .round-indicator{
   font-family:var(--font-mono); font-size:12px; letter-spacing:1.5px;
   color:var(--text-faint); text-transform:uppercase; margin-bottom:22px;
@@ -127,8 +71,6 @@ select#blockSelect{
 .round-indicator .dotline span{width:5px; height:5px; border-radius:50%; background:var(--border);}
 .round-indicator .dotline span.done{background:var(--gold);}
 .round-indicator .dotline span.current{background:var(--text); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 25%, transparent);}
-
-/* --- Стопка карточек (эффект колоды) --- */
 .card-stack{ position:relative; width:100%; max-width:520px; }
 .card-stack::before, .card-stack::after{
   content:""; position:absolute; left:50%; border-radius:var(--card-radius);
@@ -136,37 +78,22 @@ select#blockSelect{
 }
 .card-stack::before{ width:94%; height:100%; top:10px; transform:translateX(-50%); opacity:.55; z-index:1;}
 .card-stack::after{ width:88%; height:100%; top:20px; transform:translateX(-50%); opacity:.3; z-index:0;}
-
 .word-card{
-  position:relative; z-index:2;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--card-radius);
-  box-shadow:var(--shadow);
-  padding:38px 34px 30px;
-  min-height:300px;
+  position:relative; z-index:2; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--card-radius); box-shadow:var(--shadow);
+  padding:38px 34px 30px; min-height:300px;
   display:flex; flex-direction:column; align-items:center; text-align:center;
   animation:cardIn .38s cubic-bezier(.2,.9,.25,1);
 }
 .word-card::before{
   content:""; position:absolute; top:0; left:24px; right:24px; height:1px;
   background-image:radial-gradient(circle, var(--border) 1.4px, transparent 1.5px);
-  background-size:10px 1px; background-repeat:repeat-x;
-  opacity:.8;
+  background-size:10px 1px; background-repeat:repeat-x; opacity:.8;
 }
-@keyframes cardIn{
-  from{opacity:0; transform:translateY(10px) scale(.98);}
-  to{opacity:1; transform:translateY(0) scale(1);}
-}
-.card-tag{
-  font-family:var(--font-mono); font-size:11px; color:var(--text-faint);
-  letter-spacing:1px; text-transform:uppercase; margin-bottom:22px;
-}
+@keyframes cardIn{ from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:translateY(0) scale(1);} }
+.card-tag{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); letter-spacing:1px; text-transform:uppercase; margin-bottom:22px;}
 .card-tag b{color:var(--gold-dim); font-weight:600;}
-.word-en{
-  font-family:var(--font-display); font-weight:600; font-size:clamp(28px,4.2vw,42px);
-  line-height:1.15; letter-spacing:.2px;
-}
+.word-en{ font-family:var(--font-display); font-weight:600; font-size:clamp(28px,4.2vw,42px); line-height:1.15; letter-spacing:.2px;}
 .word-translation{
   margin-top:16px; font-size:17px; color:var(--gold);
   font-family:var(--font-display); font-style:italic; font-weight:500;
@@ -174,60 +101,32 @@ select#blockSelect{
   transition:opacity .25s ease, transform .25s ease;
 }
 .word-translation.visible{opacity:1; transform:translateY(0);}
-.word-example{
-  margin-top:10px; font-size:13.5px; color:var(--text-dim);
-  max-width:380px; line-height:1.5; opacity:0; height:0; overflow:hidden;
-  transition:opacity .25s ease;
-}
+.word-example{ margin-top:10px; font-size:13.5px; color:var(--text-dim); max-width:380px; line-height:1.5; opacity:0; height:0; overflow:hidden; transition:opacity .25s ease;}
 .word-example.visible{opacity:1; height:auto; margin-top:12px;}
-
-/* --- Цепочка истории --- */
 .history-wrap{ margin-top:28px; display:flex; flex-direction:column; align-items:center; gap:9px;}
 .history-dots{ position:relative; display:flex; gap:14px; align-items:center; }
-.history-dots::before{
-  content:""; position:absolute; left:5px; right:5px; top:50%; height:1px;
-  background:var(--border); transform:translateY(-50%); z-index:0;
-}
-.hdot{
-  width:11px; height:11px; border-radius:50%; position:relative; z-index:1;
-  background:var(--surface-2); border:1.5px solid var(--border);
-  transition:all .2s ease;
-}
+.history-dots::before{ content:""; position:absolute; left:5px; right:5px; top:50%; height:1px; background:var(--border); transform:translateY(-50%); z-index:0;}
+.hdot{ width:11px; height:11px; border-radius:50%; position:relative; z-index:1; background:var(--surface-2); border:1.5px solid var(--border); transition:all .2s ease;}
 .hdot.know{ background:var(--good); border-color:var(--good); box-shadow:0 0 10px -2px var(--good);}
 .hdot.dontknow{ background:var(--bad); border-color:var(--bad); box-shadow:0 0 10px -2px var(--bad);}
 .progress-text{ font-family:var(--font-mono); font-size:12px; color:var(--text-faint); letter-spacing:.5px;}
-
-/* ============ КНОПКИ ============ */
 .controls{ width:100%; max-width:520px; margin-top:26px; display:flex; flex-direction:column; gap:12px; align-items:center;}
-.btn{
-  font-family:var(--font-body); font-weight:600; font-size:14.5px;
-  padding:13px 24px; border-radius:5px; border:1px solid transparent;
-  cursor:pointer; transition:all .18s ease; letter-spacing:.2px;
-}
+.btn{ font-family:var(--font-body); font-weight:600; font-size:14.5px; padding:13px 24px; border-radius:5px; border:1px solid transparent; cursor:pointer; transition:all .18s ease; letter-spacing:.2px;}
 .btn:disabled{opacity:.35; cursor:not-allowed;}
-.btn-ghost{
-  background:transparent; border-color:var(--border); color:var(--text-dim);
-}
+.btn-ghost{ background:transparent; border-color:var(--border); color:var(--text-dim);}
 .btn-ghost:hover:not(:disabled){ border-color:var(--gold); color:var(--gold);}
-.btn-primary{
-  background:var(--gold); color:#171308; border-color:var(--gold);
-}
+.btn-primary{ background:var(--gold); color:#171308; border-color:var(--gold);}
 .btn-primary:hover:not(:disabled){ filter:brightness(1.08); transform:translateY(-1px);}
 .answer-row{ display:flex; gap:12px; width:100%; }
-.btn-know, .btn-dontknow{
-  flex:1; padding:15px; font-size:15px; border-radius:6px; font-weight:700;
-  display:flex; align-items:center; justify-content:center; gap:8px;
-}
+.btn-know, .btn-dontknow{ flex:1; padding:15px; font-size:15px; border-radius:6px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;}
 .btn-know{ background:var(--good-dim); color:var(--good); border:1px solid var(--good);}
 .btn-know:hover{ background:var(--good); color:#0b2015; }
 .btn-dontknow{ background:var(--bad-dim); color:var(--bad); border:1px solid var(--bad);}
 .btn-dontknow:hover{ background:var(--bad); color:#2a0b0b; }
 [data-theme="light"] .btn-know:hover{ color:#fff; }
 [data-theme="light"] .btn-dontknow:hover{ color:#fff; }
-
 .start-round-area{ margin-top:34px; text-align:center; }
 .start-round-area p{ color:var(--text-faint); font-size:13px; margin-top:10px; }
-
 .round-summary{
   background:var(--surface); border:1px solid var(--border); border-radius:var(--card-radius);
   padding:40px 34px; text-align:center; max-width:460px; width:100%;
@@ -241,55 +140,37 @@ select#blockSelect{
 .summary-stat.good .n{ color:var(--good);}
 .summary-stat.bad .n{ color:var(--bad);}
 .summary-stat .l{ font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.6px;}
-
 .empty-state{ text-align:center; max-width:420px; color:var(--text-dim); }
 .empty-state .big{ font-size:44px; margin-bottom:14px; }
 .empty-state h3{ font-family:var(--font-display); font-size:22px; color:var(--text); margin-bottom:8px; }
-
-/* ============ БОКОВАЯ ПАНЕЛЬ ============ */
-.overlay{
-  position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:40;
-  opacity:0; pointer-events:none; transition:opacity .3s ease;
-}
+.overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:40; opacity:0; pointer-events:none; transition:opacity .3s ease;}
 .overlay.open{ opacity:1; pointer-events:auto; }
 .sidebar{
   position:fixed; top:0; right:0; height:100vh; width:380px; max-width:92vw;
-  background:var(--surface); border-left:1px solid var(--border);
-  z-index:50; transform:translateX(100%); transition:transform .32s cubic-bezier(.2,.9,.25,1);
+  background:var(--surface); border-left:1px solid var(--border); z-index:50;
+  transform:translateX(100%); transition:transform .32s cubic-bezier(.2,.9,.25,1);
   overflow-y:auto; padding:22px 22px 60px;
 }
 .sidebar.open{ transform:translateX(0); }
 .sidebar h2{ font-family:var(--font-display); font-size:20px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center;}
 .sidebar-section{ margin-bottom:30px; }
-.sidebar-section h3{
-  font-family:var(--font-mono); font-size:11px; letter-spacing:1px; text-transform:uppercase;
-  color:var(--text-faint); margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border-soft);
-}
-.block-row{
-  display:flex; flex-direction:column; gap:6px; padding:10px 12px; border-radius:5px;
-  border:1px solid var(--border-soft); margin-bottom:8px; cursor:pointer; transition:border-color .2s ease;
-}
+.sidebar-section h3{ font-family:var(--font-mono); font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--text-faint); margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border-soft);}
+.block-row{ display:flex; flex-direction:column; gap:6px; padding:10px 12px; border-radius:5px; border:1px solid var(--border-soft); margin-bottom:8px; cursor:pointer; transition:border-color .2s ease;}
 .block-row:hover{ border-color:var(--gold-dim); }
 .block-row.active{ border-color:var(--gold); background:var(--surface-2); }
 .block-row-top{ display:flex; justify-content:space-between; font-size:13px; font-weight:600; gap:8px;}
 .block-row-top .status{ font-size:11px; color:var(--good); white-space:nowrap;}
 .block-bar{ height:4px; background:var(--surface-2); border-radius:2px; overflow:hidden; }
 .block-bar-fill{ height:100%; background:var(--gold); }
-
 .field{ display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
 .field label{ font-size:11.5px; color:var(--text-faint); font-weight:600; }
-.field input, .field textarea, .field select{
-  background:var(--bg); border:1px solid var(--border); border-radius:4px; color:var(--text);
-  padding:9px 10px; font-size:13.5px; font-family:var(--font-body); resize:vertical;
-}
+.field input, .field textarea, .field select{ background:var(--bg); border:1px solid var(--border); border-radius:4px; color:var(--text); padding:9px 10px; font-size:13.5px; font-family:var(--font-body); resize:vertical;}
 .slider-row{ display:flex; align-items:center; gap:10px; }
 .slider-row input[type=range]{ flex:1; accent-color:var(--gold); }
 .slider-val{ font-family:var(--font-mono); font-size:13px; width:24px; text-align:center; }
-
 .btn-block{ width:100%; margin-bottom:8px; text-align:center; }
 .btn-danger{ color:var(--bad); border-color:var(--bad-dim); }
 .btn-danger:hover{ border-color:var(--bad); background:var(--bad-dim); }
-
 .toast{
   position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
   background:var(--surface-2); border:1px solid var(--border); color:var(--text);
@@ -297,22 +178,13 @@ select#blockSelect{
   opacity:0; pointer-events:none; transition:all .3s ease; box-shadow:var(--shadow);
 }
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-
-.modal-overlay{
-  position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:60;
-  display:none; align-items:center; justify-content:center; padding:20px;
-}
+.modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:60; display:none; align-items:center; justify-content:center; padding:20px;}
 .modal-overlay.open{ display:flex; }
-.modal{
-  background:var(--surface); border:1px solid var(--border); border-radius:8px;
-  padding:26px; max-width:420px; width:100%; box-shadow:var(--shadow);
-}
+.modal{ background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:26px; max-width:420px; width:100%; box-shadow:var(--shadow);}
 .modal h3{ font-family:var(--font-display); font-size:19px; margin-bottom:16px; }
 .modal-actions{ display:flex; gap:10px; margin-top:16px; }
 .modal-actions .btn{ flex:1; }
-
 #confettiCanvas{ position:fixed; inset:0; pointer-events:none; z-index:200; }
-
 @media(max-width:640px){
   .topbar{ padding:12px 14px; gap:10px; }
   .overall-progress{ display:none; }
@@ -345,17 +217,14 @@ select#blockSelect{
 <div class="overlay" id="overlay"></div>
 <aside class="sidebar" id="sidebar">
   <h2>Блоки <button class="icon-btn" id="sidebarClose" style="width:30px;height:30px;font-size:14px;">✕</button></h2>
-
   <div class="sidebar-section">
     <h3>Прогресс по блокам</h3>
     <div id="blockList"></div>
   </div>
-
   <div class="sidebar-section">
     <h3>Повторение</h3>
     <button class="btn btn-ghost btn-block" id="globalReviewBtn">🔁 Повторить все выученные слова</button>
   </div>
-
   <div class="sidebar-section">
     <h3>Настройки раунда</h3>
     <div class="field">
@@ -365,20 +234,17 @@ select#blockSelect{
       </div>
     </div>
   </div>
-
   <div class="sidebar-section">
     <h3>Управление словами</h3>
     <button class="btn btn-ghost btn-block" id="openAddWord">➕ Добавить слово</button>
     <button class="btn btn-ghost btn-block" id="openBulkAdd">📋 Добавить список слов</button>
   </div>
-
   <div class="sidebar-section">
     <h3>Данные</h3>
     <button class="btn btn-ghost btn-block" id="exportBtn">⬇️ Экспорт данных (JSON)</button>
     <button class="btn btn-ghost btn-block" id="importBtn">⬆️ Импорт данных</button>
     <input type="file" id="importFile" accept="application/json" style="display:none;">
   </div>
-
   <div class="sidebar-section">
     <h3>Сброс прогресса</h3>
     <button class="btn btn-ghost btn-danger btn-block" id="resetBlockBtn">↺ Сбросить прогресс текущего блока</button>
@@ -389,22 +255,10 @@ select#blockSelect{
 <div class="modal-overlay" id="addWordModal">
   <div class="modal">
     <h3>Добавить слово</h3>
-    <div class="field">
-      <label>Блок</label>
-      <select id="newWordBlock"></select>
-    </div>
-    <div class="field">
-      <label>Английское слово / фраза</label>
-      <input type="text" id="newWordEn" placeholder="напр. resilient">
-    </div>
-    <div class="field">
-      <label>Перевод</label>
-      <input type="text" id="newWordTr" placeholder="напр. стойкий, жизнестойкий">
-    </div>
-    <div class="field">
-      <label>Пример (необязательно)</label>
-      <textarea id="newWordEx" rows="2" placeholder="Пример предложения..."></textarea>
-    </div>
+    <div class="field"><label>Блок</label><select id="newWordBlock"></select></div>
+    <div class="field"><label>Английское слово / фраза</label><input type="text" id="newWordEn" placeholder="напр. resilient"></div>
+    <div class="field"><label>Перевод</label><input type="text" id="newWordTr" placeholder="напр. стойкий"></div>
+    <div class="field"><label>Пример (необязательно)</label><textarea id="newWordEx" rows="2"></textarea></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="cancelAddWord">Отмена</button>
       <button class="btn btn-primary" id="confirmAddWord">Добавить</button>
@@ -415,13 +269,10 @@ select#blockSelect{
 <div class="modal-overlay" id="bulkAddModal">
   <div class="modal">
     <h3>Добавить список слов</h3>
-    <div class="field">
-      <label>Блок</label>
-      <select id="bulkWordBlock"></select>
-    </div>
+    <div class="field"><label>Блок</label><select id="bulkWordBlock"></select></div>
     <div class="field">
       <label>Список (по одному слову на строку, формат: слово - перевод)</label>
-      <textarea id="bulkWordsText" rows="8" placeholder="cat - кошка&#10;dog - собака&#10;resilient - устойчивый, стойкий"></textarea>
+      <textarea id="bulkWordsText" rows="8" placeholder="cat - кошка&#10;dog - собака"></textarea>
     </div>
     <div id="bulkPreview" style="font-size:12.5px; color:var(--text-faint); margin-top:-4px; margin-bottom:8px;"></div>
     <div class="modal-actions">
@@ -443,12 +294,12 @@ const BLOCK_NAMES = {
   22: "Математика",
   23: "Новые слова",
   24: "Доп. слова 21",
-  25: "Новые слова ч.2"
+  25: "Новые слова ч.2",
+  26: "Связки и переходы",
+  27: "Новые слова ч.3"
 };
 
 /* ---------- 1. ИСХОДНЫЕ ДАННЫЕ ---------- */
-// Формат: [номер блока, английское слово, перевод]
-// Блоки 1–21 — по ~20 слов; блок 22 — математика (72); блоки 23–25 — новые слова.
 const WORDS_RAW = [
 /* ===== БЛОК 1 (20) ===== */
 [1,"participation","участие"],[1,"convoluted","запутанный, сложный"],[1,"tale","история, рассказ"],
@@ -677,21 +528,62 @@ const WORDS_RAW = [
 [23,"carved","вырезанный, высеченный"],[23,"frequently","часто"],
 
 /* ===== БЛОК 24: ДОП. СЛОВА 21 (6) ===== */
-[24,"varied","разнообразный, различный"],[24,"debris","обломки, мусор"],[24,"mudes","(опечатка) — вероятно, moods: настроения"],
-[24,"faithfull","(опечатка) — верный, преданный"],[24,"prior","предшествующий, более ранний"],[24,"subdued","приглушённый, подавленный"],
+[24,"varied","разнообразный, различный"],[24,"debris","обломки, мусор"],
+[24,"mudes","(опечатка) — вероятно, moods: настроения"],[24,"faithfull","(опечатка) — верный, преданный"],
+[24,"prior","предшествующий, более ранний"],[24,"subdued","приглушённый, подавленный"],
 
-/* ===== БЛОК 25: НОВЫЕ СЛОВА ч.2 (17) ===== */
+/* ===== БЛОК 25: НОВЫЕ СЛОВА ч.2 (12) ===== */
 [25,"abstruse","трудный для понимания, заумный"],[25,"lucid","ясный, понятный"],[25,"verbose","многословный"],
 [25,"ambiguous","двусмысленный, неоднозначный"],[25,"mortgage","ипотека, залог"],[25,"tile","плитка, черепица"],
 [25,"dazzling","ослепительный, потрясающий"],[25,"exuberant","жизнерадостный, бурный"],[25,"evaporates","испаряется"],
 [25,"adept","искусный, умелый"],[25,"basin","бассейн, таз, котловина"],[25,"underscores","подчёркивает"],
-[25,"prey","добыча"],[25,"carnivorous","плотоядный"],[25,"unearthed","раскопан"],
-[25,"fairly","справедливо"],[25,"ridge","хребет"]
+
+/* ===== БЛОК 26: СВЯЗКИ И ПЕРЕХОДЫ (48) ===== */
+[26,"but","но"],[26,"yet","однако, но"],[26,"though","хотя; однако"],
+[26,"although","хотя, несмотря на то что"],[26,"even though","даже хотя"],[26,"while","тогда как, в то время как"],
+[26,"whereas","тогда как, в то время как"],[26,"even if","даже если"],[26,"however","однако"],
+[26,"nevertheless","тем не менее"],[26,"nonetheless","тем не менее"],[26,"still","тем не менее, всё же"],
+[26,"instead","вместо этого"],[26,"conversely","наоборот, обратно"],[26,"on the other hand","с другой стороны"],
+[26,"in contrast","в противоположность"],[26,"alternatively","в качестве альтернативы"],[26,"that said","при этом, однако"],
+[26,"granted","правда, конечно"],[26,"moreover","более того, кроме того"],[26,"furthermore","более того, кроме того"],
+[26,"in addition","вдобавок, к тому же"],[26,"additionally","вдобавок, к тому же"],[26,"also","также"],
+[26,"besides","кроме того"],[26,"similarly","аналогично, точно так же"],[26,"likewise","аналогично, точно так же"],
+[26,"indeed","в самом деле, действительно"],[26,"in fact","в самом деле, фактически"],[26,"therefore","следовательно, поэтому"],
+[26,"thus","следовательно, таким образом"],[26,"hence","следовательно, отсюда"],[26,"consequently","в результате, следовательно"],
+[26,"as a result","в результате"],[26,"accordingly","соответственно, поэтому"],[26,"because","потому что"],
+[26,"since","так как, поскольку"],[26,"as","так как, по мере того как"],[26,"so","так что, поэтому"],
+[26,"for this reason","по этой причине"],[26,"for example","например"],[26,"for instance","например"],
+[26,"specifically","конкретно, в частности"],[26,"in other words","иными словами"],[26,"that is","то есть"],
+[26,"namely","а именно"],[26,"meanwhile","тем временем"],[26,"subsequently","впоследствии, затем"],
+[26,"finally","наконец"],[26,"ultimately","в конечном счёте"],
+
+/* ===== БЛОК 27: НОВЫЕ СЛОВА ч.3 (24) ===== */
+[27,"microbeads","микрогранулы, микросферы"],[27,"contrary","противоположный, вопреки"],
+[27,"scarne","скудный, убогий (вероятно, опечатка: scarce)"],[27,"invasive","инвазивный, захватнический"],
+[27,"tangible","осязаемый, материальный"],[27,"burdensome","обременительный, тяжёлый"],
+[27,"endorsed","поддержал, одобрил"],[27,"called forth","вызвал, пробудил"],
+[27,"resolute","решительный, твёрдый"],[27,"climax","кульминация, развязка"],
+[27,"interruption","прерывание, помеха"],[27,"corroborate","подтверждать, подкреплять"],
+[27,"temporary","временный"],[27,"clarity","ясность, чёткость"],
+[27,"mediocre","посредственный"],[27,"groundbreaking","новаторский, революционный"],
+[27,"vague","смутный, расплывчатый"],[27,"concise","краткий, сжатый"],
+[27,"passionate","страстный, пылкий"],[27,"contradict","противоречить"],
+[27,"benign","доброкачественный, мягкий"],[27,"wealthy","богатый, состоятельный"],
+[27,"patrons","покровители, завсегдатаи"],[27,"deliberately","намеренно, умышленно"]
 ];
 
-const TOTAL_BLOCKS = 25;
-const BLOCK_SIZES = {};
-WORDS_RAW.forEach(([b])=>{ BLOCK_SIZES[b]=(BLOCK_SIZES[b]||0)+1; });
+const TOTAL_BLOCKS = 27;
+
+// BLOCK_SIZES всегда пересчитывается из реального массива state.words — так
+// счётчик показывает корректное "выучено/всего" и не даёт расхождений вида 27/12.
+let BLOCK_SIZES = {};
+
+function recomputeBlockSizes(){
+  BLOCK_SIZES = {};
+  state.words.forEach(w => {
+    BLOCK_SIZES[w.blockId] = (BLOCK_SIZES[w.blockId] || 0) + 1;
+  });
+}
 
 function blockLabel(b){
   return BLOCK_NAMES[b] ? `Блок ${b} — ${BLOCK_NAMES[b]}` : `Блок ${b}`;
@@ -756,8 +648,36 @@ async function loadData(){
     try{ state.settings = Object.assign(state.settings, JSON.parse(rawSettings)); }
     catch(e){}
   }
+
+  const beforeCount = state.words.length;
+  dedupeWords();
+  if(state.words.length !== beforeCount){
+    await saveWords();
+    showToast(`🧹 Удалено дубликатов: ${beforeCount - state.words.length}`);
+  }
+
   await mergeNewBaseWords();
+  recomputeBlockSizes();
   await applyOneTimeMigrations();
+}
+
+// Удаляет дубликаты по ключу (blockId + lowercased english).
+function dedupeWords(){
+  const seen = new Map();
+  const result = [];
+  state.words.forEach(w => {
+    const key = w.blockId + '|' + String(w.english || '').toLowerCase().trim();
+    if(seen.has(key)){
+      const kept = seen.get(key);
+      if((w.history || []).length > (kept.history || []).length){
+        kept.history = w.history;
+      }
+    } else {
+      seen.set(key, w);
+      result.push(w);
+    }
+  });
+  state.words = result;
 }
 
 async function applyOneTimeMigrations(){
@@ -819,9 +739,9 @@ function renderTopbar(){
   const select = document.getElementById('blockSelect');
   select.innerHTML = '';
   for(let b=1; b<=TOTAL_BLOCKS; b++){
-    const learned = learnedCountInBlock(b);
     const total = BLOCK_SIZES[b];
     if(total === undefined) continue;
+    const learned = learnedCountInBlock(b);
     const opt = document.createElement('option');
     opt.value = b;
     opt.textContent = `${blockLabel(b)} — Выучено ${learned}/${total}`;
@@ -1099,6 +1019,8 @@ function importData(file){
       if(data.words && Array.isArray(data.words)){
         state.words = data.words;
         if(data.settings) state.settings = Object.assign(state.settings, data.settings);
+        dedupeWords();
+        recomputeBlockSizes();
         saveWords(); saveSettings();
         state.round = null;
         renderAll();
@@ -1130,7 +1052,7 @@ function addWord(){
   if(!en || !tr){ showToast('Заполните слово и перевод'); return; }
   const newId = 'w' + Date.now();
   state.words.push({ id:newId, english:en, translation:tr, example:ex, blockId:block, history:[] });
-  BLOCK_SIZES[block] = (BLOCK_SIZES[block]||0) + 1;
+  recomputeBlockSizes();
   saveWords();
   document.getElementById('newWordEn').value = '';
   document.getElementById('newWordTr').value = '';
@@ -1173,8 +1095,8 @@ function addBulkWords(){
   parsed.forEach((item, i) => {
     const newId = 'w' + Date.now() + '_' + i;
     state.words.push({ id:newId, english:item.english, translation:item.translation, example:'', blockId:block, history:[] });
-    BLOCK_SIZES[block] = (BLOCK_SIZES[block]||0) + 1;
   });
+  recomputeBlockSizes();
   saveWords();
   document.getElementById('bulkWordsText').value = '';
   document.getElementById('bulkPreview').textContent = '';
